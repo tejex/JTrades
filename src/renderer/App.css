@@ -1,0 +1,227 @@
+/* General App Layout */
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f4f4f9; /* Soft light gray for a clean background */
+  font-family: 'Roboto', sans-serif; /* Modern and easy-to-read font */
+  color: #2d3748; /* Neutral dark gray for text */
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  color: #1a202c; /* Darker header text */
+  margin-bottom: 10px;
+}
+
+.app-main {
+  margin-top: 20px;
+}
+
+/* Summary Section */
+.summary-section {
+  text-align: center;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff; /* White card-like background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.summary-section h2 {
+  font-size: 1.8rem;
+  color: #2b6cb0; /* Blue accent color for headings */
+}
+
+.summary-metrics {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap; /* Wrap metrics if needed */
+}
+
+.summary-metrics h3 {
+  font-size: 1.2rem;
+  color: #4a5568; /* Slightly muted text color */
+}
+
+/* Chart Section */
+.chart-section {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.chart-section-container {
+  flex: 2; /* Main focus on chart */
+  background-color: #ffffff; /* White background for chart */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pie-container {
+  flex: 1; /* Smaller space for pie chart */
+  background-color: #f7fafc; /* Very light gray */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pie Chart Stats */
+.piechart-stats {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 1rem;
+  color: #4a5568; /* Muted text */
+}
+
+/* Performance Alerts */
+.performance-box {
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* Adds spacing between alerts */
+}
+
+.alert {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.success-alert {
+  background-color: #38a169; /* Gain green */
+}
+
+.error-alert {
+  background-color: #e53e3e; /* Loss red */
+}
+
+/* Chart & PieChart Containers */
+.chart-container {
+  width: 100%;
+  height: 500px; /* Explicit height for the chart */
+  background-color: #ffffff; /* Keeps chart clean and neutral */
+  border-radius: 8px;
+}
+
+.piechart-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* No Data Message */
+.no-data {
+  text-align: center;
+  margin-top: 50px;
+  color: #718096; /* Muted text for inactive state */
+  font-size: 1.2rem;
+}
+
+/* Accent Colors for Trading Style */
+.success-color {
+  color: #38a169; /* Matches success green */
+}
+
+.error-color {
+  color: #e53e3e; /* Matches error red */
+}
+
+.info-color {
+  color: #3182ce; /* Accent blue for neutral info */
+}
+
+/*Calendar CSS */
+
+.calendar-component{
+  padding: 3%;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 days in a week */
+  gap: 5px;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 60%;
+}
+
+.calendar-day {
+  padding: 1px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-navigation {
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px; /* Add padding for better spacing */
+  background-color: #f9f9f9; /* Light background to match the theme */
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.day-number {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.pnl-value {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.monthly-pnl {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  width: 60%;
+}
+
+.monthly-pnl.positive {
+  background-color: #d4edda; /* Light green */
+  color: #155724; /* Dark green */
+}
+
+.monthly-pnl.negative {
+  background-color: #f8d7da; /* Light red */
+  color: #721c24; /* Dark red */
+}
