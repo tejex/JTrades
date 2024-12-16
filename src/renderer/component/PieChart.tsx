@@ -65,7 +65,7 @@ const TradingPieChart = ({ data }: { data: ParsedRow[] }) => {
                         data: chartData,
                     },
                 ]}
-                width={400}
+                width={360}
                 height={400}
             />
             <div className="piechart-stats">

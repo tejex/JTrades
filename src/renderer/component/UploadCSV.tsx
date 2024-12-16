@@ -102,6 +102,7 @@ const UploadCSV: React.FC<UploadCSVProps> = ({ setData }) => {
             const file = event.target.files[0]
             try {
                 const parsedData = await parseCSV(file)
+
                 setData(parsedData)
                 console.log(parsedData)
             } catch (error) {

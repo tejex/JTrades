@@ -1,3 +1,4 @@
+import React from 'react'
 import { LineChart } from '@mui/x-charts/LineChart'
 
 interface TradeBalance {
@@ -11,13 +12,16 @@ const Chart = ({ data }: { data: TradeBalance[] }) => {
     const xLabels = data.map((item) => item.date)
 
     return (
-        <div className="chart-container">
+        <div
+            className="chart-container"
+            style={{ height: '435px', width: '100%' }} // Ensure the container has height and width
+        >
             <LineChart
                 series={[
                     {
                         data: yData,
                         label: 'Balance Over Time',
-                        showMark: ({ index }) => index % 4 === 0,
+                        showMark: ({ index }) => index % 8 === 0,
                     },
                 ]}
                 xAxis={[

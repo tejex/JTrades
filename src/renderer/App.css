@@ -20,7 +20,9 @@
 }
 
 .app-main {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Summary Section */
@@ -54,24 +56,50 @@
   color: #4a5568; /* Slightly muted text color */
 }
 
-/* Chart Section */
+/* Chart and Form Section */
 .chart-section {
   display: flex;
   gap: 20px;
   align-items: flex-start;
+  justify-content: space-between;
 }
 
-.chart-section-container {
-  flex: 2; /* Main focus on chart */
-  background-color: #ffffff; /* White background for chart */
+.chart-container {
+  flex: 7; /* Main focus on chart */
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.pie-container {
-  flex: 1; /* Smaller space for pie chart */
-  background-color: #f7fafc; /* Very light gray */
+.form-container {
+  flex: 3; /* Smaller space for form */
+  background-color: #f7fafc;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Info Section (Calendar and Pie Chart) */
+.info-section {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.calendar-container {
+  flex: 7; /* 70% of the width */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.piechart-container {
+  flex: 3; /* 30% of the width */
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -79,6 +107,52 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+
+/* Calendar CSS */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 days in a week */
+  gap: 5px;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.calendar-day {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.day-number {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.pnl-value {
+  font-size: 0.8rem;
+  font-weight: bold;
 }
 
 /* Pie Chart Stats */
@@ -87,51 +161,6 @@
   text-align: center;
   font-size: 1rem;
   color: #4a5568; /* Muted text */
-}
-
-/* Performance Alerts */
-.performance-box {
-  width: 100%;
-  margin: auto;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px; /* Adds spacing between alerts */
-}
-
-.alert {
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.success-alert {
-  background-color: #38a169; /* Gain green */
-}
-
-.error-alert {
-  background-color: #e53e3e; /* Loss red */
-}
-
-/* Chart & PieChart Containers */
-.chart-container {
-  width: 100%;
-  height: 500px; /* Explicit height for the chart */
-  background-color: #ffffff; /* Keeps chart clean and neutral */
-  border-radius: 8px;
-}
-
-.piechart-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 /* No Data Message */
@@ -155,73 +184,18 @@
   color: #3182ce; /* Accent blue for neutral info */
 }
 
-/*Calendar CSS */
-
-.calendar-component{
-  padding: 3%;
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 days in a week */
-  gap: 5px;
-  padding: 5px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+.journal-container {
+  padding: 20px;
+  background: #fff;
   border-radius: 8px;
-  width: 60%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.calendar-day {
-  padding: 1px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  text-align: center;
-  font-size: 0.9rem;
-  min-height: 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-navigation {
-  display: flex;
-  justify-content: space-between;
-  width: 60%;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 0 10px; /* Add padding for better spacing */
-  background-color: #f9f9f9; /* Light background to match the theme */
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-.day-number {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.pnl-value {
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.monthly-pnl {
+.journal-title {
   text-align: center;
   margin-bottom: 20px;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: bold;
-  width: 60%;
 }
 
-.monthly-pnl.positive {
-  background-color: #d4edda; /* Light green */
-  color: #155724; /* Dark green */
-}
-
-.monthly-pnl.negative {
-  background-color: #f8d7da; /* Light red */
-  color: #721c24; /* Dark red */
+.journal-submit-button {
+  width: 100%;
 }

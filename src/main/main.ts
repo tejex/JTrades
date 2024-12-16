@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
+import fs from 'fs'
 
 class AppUpdater {
     constructor() {
@@ -29,6 +30,18 @@ ipcMain.on('ipc-example', async (event, arg) => {
     const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`
     console.log(msgTemplate(arg))
     event.reply('ipc-example', msgTemplate('pong'))
+})
+
+ipcMain.handle('read-trades-file', async () => {
+    const filePath = path.join(app.getAppPath(), 'trades.json') // Ensure the file is in the root directory
+    try {
+        const fileContent = fs.readFileSync(filePath, 'utf-8')
+        const data = JSON.parse(fileContent) // Parse the JSON file
+        return data
+    } catch (error) {
+        console.error('Error reading trades.json:', error)
+        throw error // Ensure the renderer process handles errors
+    }
 })
 
 if (process.env.NODE_ENV === 'production') {
