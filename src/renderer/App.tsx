@@ -94,14 +94,11 @@ function App() {
                     <section className="summary-section">
                         <h2>Balance Over Time</h2>
                         <div className="summary-metrics">
-                            <h3>
-                                Total Account Value: $
-                                {totalAccountValue.toFixed(2)}
-                            </h3>
-                            <h3>
-                                Total Profit / Loss: ${totalProfit.toFixed(2)}
-                            </h3>
-                            <PersonalBests data={data} />
+                            <PersonalBests
+                                data={data}
+                                accountSize={totalAccountValue}
+                                currentProfit={totalProfit}
+                            />
                         </div>
                     </section>
                     <section className="chart-section">
