@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Chart from './component/Chart'
-import TradingPieChart from './component/PieChart'
 import PersonalBests from './component/PersonalBests'
 import CustomCalendar from './component/Calendar'
 import Journal from './component/Journal'
@@ -112,9 +111,7 @@ function App() {
                         <div className="calendar-container">
                             <CustomCalendar data={data} />
                         </div>
-                        <div className="piechart-container">
-                            <TradingPieChart data={data} />
-                        </div>
+                        <div className="piechart-container">coming soon</div>
                     </section>
                 </main>
             ) : (
