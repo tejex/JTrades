@@ -25,83 +25,59 @@ function App() {
     const [totalAccountValue, setTotalAccountValue] = useState(0)
     const [totalProfit, setTotalProfit] = useState(0)
 
-    useEffect(() => {
-        const fetchTrades = async () => {
-            try {
-                // Fetch the trades data from the main process
-                const trades: any[] =
-                    await window.electron.ipcRenderer.invoke('read-trades-file')
+    const fetchTrades = async () => {
+        try {
+            const trades: any[] =
+                await window.electron.ipcRenderer.invoke('read-trades-file')
 
-                // Transform and validate the data
-                const parsedTrades: ParsedRow[] = trades
-                    .map((trade) => {
-                        const dateString = trade.time?.trim()
+            const parsedTrades: ParsedRow[] = trades
+                .map((trade) => {
+                    const dateString = trade.time?.trim()
+                    if (!dateString) return null
 
-                        if (!dateString) {
-                            console.error(
-                                'Missing date string in trade:',
-                                trade
-                            )
-                            return null
-                        }
+                    const isoDateString = dateString.replace(' ', 'T') + 'Z'
+                    const date = new Date(isoDateString)
 
-                        const isoDateString = dateString.replace(' ', 'T') + 'Z'
-                        const date = new Date(isoDateString)
+                    if (isNaN(date.getTime())) return null
 
-                        if (isNaN(date.getTime())) {
-                            console.error(
-                                'Invalid Date:',
-                                isoDateString,
-                                'Original:',
-                                dateString
-                            )
-                            return null
-                        }
+                    return {
+                        date: date.getTime(),
+                        balanceBefore: trade.balance_before,
+                        balanceAfter: trade.balance_after,
+                        realizedPnlValue: trade.realized_pnl,
+                        realizedPnlCurrency: trade.currency,
+                        action: trade.action,
+                    }
+                })
+                .filter((trade) => trade !== null) as ParsedRow[]
 
-                        return {
-                            date: date.getTime(), // Convert to timestamp
-                            balanceBefore: trade.balance_before,
-                            balanceAfter: trade.balance_after,
-                            realizedPnlValue: trade.realized_pnl,
-                            realizedPnlCurrency: trade.currency,
-                            action: '', // Default to empty if no token
-                        }
-                    })
-                    .reverse()
-                    .filter((trade) => trade !== null) as ParsedRow[] // Filter out invalid entries
+            setData(parsedTrades)
 
-                setData(parsedTrades)
+            const transformedData: TradeBalance[] = parsedTrades.map(
+                (trade) => ({
+                    date: trade.date,
+                    balance: trade.balanceAfter,
+                })
+            )
 
-                // Transform for Chart component
-                const transformedData: TradeBalance[] = parsedTrades.map(
-                    (trade) => ({
-                        date: trade.date,
-                        balance: trade.balanceAfter,
-                    })
-                )
+            setChartData(transformedData)
 
-                setChartData(transformedData)
+            if (parsedTrades.length > 0) {
+                const lastBalance =
+                    parsedTrades[parsedTrades.length - 1].balanceAfter
+                const firstBalance = parsedTrades[0].balanceBefore
 
-                // Calculate totals
-                if (parsedTrades.length > 0) {
-                    const lastBalance =
-                        parsedTrades[parsedTrades.length - 1].balanceAfter
-                    const firstBalance = parsedTrades[0].balanceBefore
-
-                    const profit = Math.floor(lastBalance - firstBalance)
-
-                    setTotalAccountValue(lastBalance)
-                    setTotalProfit(profit)
-                }
-            } catch (error) {
-                console.error('Error fetching trades:', error)
+                setTotalAccountValue(lastBalance)
+                setTotalProfit(lastBalance - firstBalance)
             }
+        } catch (err) {
+            console.error('Error fetching trades:', err)
         }
+    }
 
+    useEffect(() => {
         fetchTrades()
-    }, [])
-
-    console.log(data)
+    }, [data])
 
     return (
         <div className="app-container">
@@ -128,21 +104,17 @@ function App() {
                         <div className="form-container">
                             <Journal
                                 totalAccountValue={totalAccountValue}
-                                onSubmit={(formData) => {
-                                    console.log('Trade logged:', formData)
-                                }}
+                                onSubmit={fetchTrades}
                             />
                         </div>
                     </section>
                     <section className="info-section">
-                        <section className="info-section">
-                            <div className="calendar-container">
-                                <CustomCalendar data={data} />
-                            </div>
-                            <div className="piechart-container">
-                                <TradingPieChart data={data} />
-                            </div>
-                        </section>
+                        <div className="calendar-container">
+                            <CustomCalendar data={data} />
+                        </div>
+                        <div className="piechart-container">
+                            <TradingPieChart data={data} />
+                        </div>
                     </section>
                 </main>
             ) : (

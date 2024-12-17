@@ -15,7 +15,7 @@ interface TradeFormData {
 
 interface TradeFormProps {
     totalAccountValue: number
-    onSubmit: (formData: TradeFormData) => void
+    onSubmit: () => void // Updated to match expected functionality
 }
 
 const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
@@ -51,16 +51,56 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
         }))
     }
 
-    const handleSubmit = () => {
-        onSubmit(formData)
+    const handleSubmit = async () => {
+        const formatDate = (date: Date) => {
+            const year = date.getFullYear()
+            const month = String(date.getMonth() + 1).padStart(2, '0')
+            const day = String(date.getDate()).padStart(2, '0')
+            const hours = String(date.getHours()).padStart(2, '0')
+            const minutes = String(date.getMinutes()).padStart(2, '0')
+            const seconds = String(date.getSeconds()).padStart(2, '0')
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+        }
+
+        const newTrade = {
+            time: formatDate(new Date()), // Format date correctly
+            balance_before: totalAccountValue,
+            balance_after: totalAccountValue + formData.pnlValue,
+            realized_pnl: formData.pnlValue,
+            currency: 'USD',
+            token: formData.symbol,
+            tpHit: formData.tpHit,
+            slHit: formData.slHit,
+            panicClose: formData.panicClose,
+            fomoEnter: formData.fomoEnter,
+            followedRules: formData.followedRules,
+        }
+
+        try {
+            // Call Electron API to add new trade
+            const response = await window.electron.ipcRenderer.invoke(
+                'add-new-trade',
+                newTrade
+            )
+
+            if (response.success) {
+                onSubmit() // Reload trade data
+            } else {
+                console.error('Failed to add trade:', response.message)
+            }
+        } catch (error) {
+            console.error('Error adding trade:', error)
+        }
+
+        // Reset form
         setFormData({
             symbol: '',
-            followedRules: false,
             pnlValue: 0,
             tpHit: false,
             slHit: false,
             panicClose: false,
             fomoEnter: false,
+            followedRules: false,
         })
     }
 
@@ -73,11 +113,10 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
                 Log Your Trade
             </Title>
             <p style={{ textAlign: 'center', marginBottom: '10px' }}>
-                Enter Honestly if you wish to grow : ){' '}
+                Enter Honestly if you wish to grow :)
             </p>
             <Form layout="vertical" onFinish={handleSubmit}>
-                {/* Symbol */}
-                <Form.Item label="Symbol Traded">
+                <Form.Item label="Symbol Traded" required>
                     <Input
                         name="symbol"
                         value={formData.symbol}
@@ -85,9 +124,7 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
                         placeholder="e.g., BTC, ETH, SOL"
                     />
                 </Form.Item>
-
-                {/* PnL Value */}
-                <Form.Item label="PnL Value">
+                <Form.Item label="PnL Value" required>
                     <InputNumber
                         value={formData.pnlValue}
                         onChange={handlePnLChange}
@@ -96,8 +133,6 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
                         style={{ width: '100%' }}
                     />
                 </Form.Item>
-
-                {/* Checkboxes */}
                 <Form.Item label="Flags">
                     <Checkbox
                         checked={formData.followedRules}
@@ -130,8 +165,6 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
                         FOMO Enter
                     </Checkbox>
                 </Form.Item>
-
-                {/* Submit Button */}
                 <Form.Item>
                     <Button
                         type="primary"

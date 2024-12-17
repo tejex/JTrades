@@ -37,10 +37,32 @@ ipcMain.handle('read-trades-file', async () => {
     try {
         const fileContent = fs.readFileSync(filePath, 'utf-8')
         const data = JSON.parse(fileContent) // Parse the JSON file
-        return data
+        return data.reverse()
     } catch (error) {
         console.error('Error reading trades.json:', error)
         throw error // Ensure the renderer process handles errors
+    }
+})
+
+ipcMain.handle('add-new-trade', async (_event, newTrade) => {
+    const tradesFilePath = path.join(app.getAppPath(), 'trades.json')
+    try {
+        const data = fs.readFileSync(tradesFilePath, 'utf-8')
+        let trades = JSON.parse(data)
+        trades = trades.reverse()
+
+        trades.push(newTrade)
+        trades = trades.reverse()
+        fs.writeFileSync(
+            tradesFilePath,
+            JSON.stringify(trades, null, 2),
+            'utf-8'
+        )
+
+        return { success: true, message: 'Trade added successfully' }
+    } catch (err) {
+        console.error('Error updating trades.json:', err)
+        return { success: false, message: 'Failed to add new trade' }
     }
 })
 
