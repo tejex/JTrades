@@ -8,7 +8,7 @@ interface ParsedRow {
     balanceAfter: number
     realizedPnlValue: number
     realizedPnlCurrency: string
-    action: string
+    token: string
 }
 
 interface TradingData {
@@ -85,7 +85,7 @@ const PersonalBests: React.FC<TradingData> = ({ data }) => {
                 <Alert severity="error">
                     Biggest Loss: -${Math.floor(performance.worstLoss)}
                 </Alert>
-                <div className="piechart-stats">
+                <div className="winsAndLosses">
                     <p>Wins: {winsAndLosses.wins}</p>
                     <p>Losses: {winsAndLosses.losses}</p>
                 </div>

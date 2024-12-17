@@ -3,6 +3,7 @@ import Chart from './component/Chart'
 import PersonalBests from './component/PersonalBests'
 import CustomCalendar from './component/Calendar'
 import Journal from './component/Journal'
+import SavedTrades from './component/SavedTrades'
 
 interface ParsedRow {
     date: number // Timestamp in ms
@@ -10,7 +11,7 @@ interface ParsedRow {
     balanceAfter: number
     realizedPnlValue: number
     realizedPnlCurrency: string
-    action: string
+    token: string
 }
 
 interface TradeBalance {
@@ -40,12 +41,17 @@ function App() {
                     if (isNaN(date.getTime())) return null
 
                     return {
-                        date: date.getTime(),
+                        date: date.getTime(), // Convert time to timestamp
                         balanceBefore: trade.balance_before,
                         balanceAfter: trade.balance_after,
                         realizedPnlValue: trade.realized_pnl,
                         realizedPnlCurrency: trade.currency,
-                        action: trade.action,
+                        token: trade.token || '', // Default empty string for missing token
+                        tpHit: trade.tpHit ?? false, // Default to false if undefined
+                        slHit: trade.slHit ?? false,
+                        panicClose: trade.panicClose ?? false,
+                        fomoEnter: trade.fomoEnter ?? false,
+                        followedRules: trade.followedRules ?? false,
                     }
                 })
                 .filter((trade) => trade !== null) as ParsedRow[]
@@ -111,7 +117,9 @@ function App() {
                         <div className="calendar-container">
                             <CustomCalendar data={data} />
                         </div>
-                        <div className="piechart-container">coming soon</div>
+                        <div className="journal-container">
+                            <SavedTrades trades={data} />
+                        </div>
                     </section>
                 </main>
             ) : (

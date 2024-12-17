@@ -7,7 +7,7 @@ interface ParsedRow {
     balanceAfter: number
     realizedPnlValue: number
     realizedPnlCurrency: string
-    action: string
+    token: string
 }
 
 interface CalendarProps {

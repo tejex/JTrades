@@ -97,7 +97,7 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.piechart-container {
+.journal-container {
   flex: 3; /* 30% of the width */
   background-color: #ffffff;
   padding: 20px;
@@ -156,10 +156,12 @@
 }
 
 /* Pie Chart Stats */
-.piechart-stats {
+.winsAndLosses {
   margin-top: 10px;
   text-align: center;
   font-size: 1rem;
+  display: flex;
+  gap:5%;
   color: #4a5568; /* Muted text */
 }
 
@@ -198,4 +200,18 @@
 
 .journal-submit-button {
   width: 100%;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto); /* Two columns with auto width */
+  gap:2%; /* Space between tags */
+  justify-content: start; /* Align tags to the start */
+  align-items: center; /* Align items vertically */
+}
+
+.fixed-tag {
+  white-space: nowrap; /* Prevent the tag from breaking onto multiple lines */
+  text-align: center;
+  border-radius: 4px; /* Optional: soften the edges */
 }
