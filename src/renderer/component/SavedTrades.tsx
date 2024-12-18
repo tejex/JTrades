@@ -1,33 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { List, Tag, Typography, Divider } from 'antd'
+import React from 'react'
+import { List, Tag, Typography } from 'antd'
+import { JournalProps } from './interfaces'
 
 const { Title } = Typography
 
-interface ParsedRow {
-    date: number // timestamp in ms
-    balanceBefore: number
-    balanceAfter: number
-    realizedPnlValue: number
-    realizedPnlCurrency: string
-    token: string
-    tpHit?: boolean
-    slHit?: boolean
-    panicClose?: boolean
-    fomoEnter?: boolean
-    followedRules?: boolean
-}
-
-interface JournalProps {
-    trades: ParsedRow[]
-}
-
 const SavedTrades: React.FC<JournalProps> = ({ trades }) => {
-    const [savedTrades, setSavedTrades] = useState<ParsedRow[]>([])
-
-    useEffect(() => {
-        console.log(trades)
-    }, [savedTrades])
-
     const filteredTrades = trades.filter((trade) => trade.token).reverse()
 
     return (
@@ -38,12 +15,8 @@ const SavedTrades: React.FC<JournalProps> = ({ trades }) => {
                     dataSource={filteredTrades}
                     renderItem={(trade) => (
                         <List.Item className="trade-item">
+                            <div style={{ flex: 1 }}>{trade.token}</div>
                             <div style={{ flex: 1 }}>
-                                <strong>Token: </strong>
-                                {trade.token}
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <strong>PnL: </strong>
                                 <span
                                     style={{
                                         color:
@@ -58,27 +31,27 @@ const SavedTrades: React.FC<JournalProps> = ({ trades }) => {
                                 </span>
                             </div>
                             <div className="tag-grid">
-                                {trade.tpHit === true && (
+                                {trade.tpHit && (
                                     <Tag color="green" className="fixed-tag">
-                                        TP Hit
+                                        TP
                                     </Tag>
                                 )}
-                                {trade.slHit === true && (
+                                {trade.slHit && (
                                     <Tag color="red" className="fixed-tag">
-                                        SL Hit
+                                        SL
                                     </Tag>
                                 )}
-                                {trade.panicClose === true && (
+                                {trade.panicClose && (
                                     <Tag color="orange" className="fixed-tag">
                                         Panic Close
                                     </Tag>
                                 )}
-                                {trade.fomoEnter === true && (
+                                {trade.fomoEnter && (
                                     <Tag color="gold" className="fixed-tag">
                                         FOMO
                                     </Tag>
                                 )}
-                                {trade.followedRules === true && (
+                                {trade.followedRules && (
                                     <Tag color="green" className="fixed-tag">
                                         Strat Followed
                                     </Tag>

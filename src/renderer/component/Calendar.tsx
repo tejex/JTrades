@@ -1,24 +1,12 @@
 import React, { useState } from 'react'
 import Button from 'antd'
 
-interface ParsedRow {
-    date: number // Timestamp in ms
-    balanceBefore: number
-    balanceAfter: number
-    realizedPnlValue: number
-    realizedPnlCurrency: string
-    token: string
-}
+import { ParsedRow, CalendarProps } from './interfaces'
 
-interface CalendarProps {
-    data: ParsedRow[]
-}
-
-// Utility function to group PnL by date
 const groupPnLByDate = (data: ParsedRow[]) => {
     return data.reduce(
         (acc, trade) => {
-            const dateKey = new Date(trade.date).toISOString().split('T')[0] // Normalize to YYYY-MM-DD
+            const dateKey = new Date(trade.date).toISOString().split('T')[0]
             acc[dateKey] = (acc[dateKey] || 0) + trade.realizedPnlValue
             return acc
         },
@@ -26,7 +14,6 @@ const groupPnLByDate = (data: ParsedRow[]) => {
     )
 }
 
-// Utility function to calculate total PnL for a month
 const calculateMonthlyPnL = (
     groupedPnL: Record<string, number>,
     year: number,

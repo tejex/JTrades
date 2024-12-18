@@ -1,22 +1,9 @@
 import React, { useState } from 'react'
-import { Form, Input, InputNumber, Button, Checkbox, Typography } from 'antd'
+import { Form, InputNumber, Button, Checkbox, Typography } from 'antd'
+import { Flex } from 'antd'
+import { TradeFormData, TradeFormProps } from './interfaces'
 
 const { Title } = Typography
-
-interface TradeFormData {
-    symbol: string
-    followedRules: boolean
-    pnlValue: number
-    tpHit: boolean
-    slHit: boolean
-    panicClose: boolean
-    fomoEnter: boolean
-}
-
-interface TradeFormProps {
-    totalAccountValue: number
-    onSubmit: () => void // Updated to match expected functionality
-}
 
 const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
     const [formData, setFormData] = useState<TradeFormData>({
@@ -29,11 +16,10 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
         fomoEnter: false,
     })
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+    const handleSymbolSelect = (symbol: string) => {
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            symbol,
         }))
     }
 
@@ -63,7 +49,7 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
         }
 
         const newTrade = {
-            time: formatDate(new Date()), // Format date correctly
+            time: formatDate(new Date()),
             balance_before: totalAccountValue,
             balance_after: totalAccountValue + formData.pnlValue,
             realized_pnl: formData.pnlValue,
@@ -77,22 +63,15 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
         }
 
         try {
-            // Call Electron API to add new trade
             const response = await window.electron.ipcRenderer.invoke(
                 'add-new-trade',
                 newTrade
             )
-
-            if (response.success) {
-                onSubmit() // Reload trade data
-            } else {
-                console.error('Failed to add trade:', response.message)
-            }
+            if (response.success) onSubmit()
         } catch (error) {
             console.error('Error adding trade:', error)
         }
 
-        // Reset form
         setFormData({
             symbol: '',
             pnlValue: 0,
@@ -117,12 +96,38 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
             </p>
             <Form layout="vertical" onFinish={handleSubmit}>
                 <Form.Item label="Symbol Traded" required>
-                    <Input
-                        name="symbol"
-                        value={formData.symbol}
-                        onChange={handleInputChange}
-                        placeholder="e.g., BTC, ETH, SOL"
-                    />
+                    <Button.Group style={{ display: 'flex', gap: '10px' }}>
+                        <Button
+                            type={
+                                formData.symbol === 'BTC'
+                                    ? 'primary'
+                                    : 'default'
+                            }
+                            onClick={() => handleSymbolSelect('BTC')}
+                        >
+                            BTC
+                        </Button>
+                        <Button
+                            type={
+                                formData.symbol === 'ETH'
+                                    ? 'primary'
+                                    : 'default'
+                            }
+                            onClick={() => handleSymbolSelect('ETH')}
+                        >
+                            ETH
+                        </Button>
+                        <Button
+                            type={
+                                formData.symbol === 'SOL'
+                                    ? 'primary'
+                                    : 'default'
+                            }
+                            onClick={() => handleSymbolSelect('SOL')}
+                        >
+                            SOL
+                        </Button>
+                    </Button.Group>
                 </Form.Item>
                 <Form.Item label="PnL Value" required>
                     <InputNumber
@@ -134,36 +139,38 @@ const Journal: React.FC<TradeFormProps> = ({ totalAccountValue, onSubmit }) => {
                     />
                 </Form.Item>
                 <Form.Item label="Flags">
-                    <Checkbox
-                        checked={formData.followedRules}
-                        onChange={handleCheckboxChange('followedRules')}
-                    >
-                        Followed Rules
-                    </Checkbox>
-                    <Checkbox
-                        checked={formData.tpHit}
-                        onChange={handleCheckboxChange('tpHit')}
-                    >
-                        TP Hit
-                    </Checkbox>
-                    <Checkbox
-                        checked={formData.slHit}
-                        onChange={handleCheckboxChange('slHit')}
-                    >
-                        SL Hit
-                    </Checkbox>
-                    <Checkbox
-                        checked={formData.panicClose}
-                        onChange={handleCheckboxChange('panicClose')}
-                    >
-                        Panic Close
-                    </Checkbox>
-                    <Checkbox
-                        checked={formData.fomoEnter}
-                        onChange={handleCheckboxChange('fomoEnter')}
-                    >
-                        FOMO Enter
-                    </Checkbox>
+                    <Flex justify="space-between" style={{ flexWrap: 'wrap' }}>
+                        <Checkbox
+                            checked={formData.tpHit}
+                            onChange={handleCheckboxChange('tpHit')}
+                        >
+                            TP Hit
+                        </Checkbox>
+                        <Checkbox
+                            checked={formData.slHit}
+                            onChange={handleCheckboxChange('slHit')}
+                        >
+                            SL Hit
+                        </Checkbox>
+                        <Checkbox
+                            checked={formData.panicClose}
+                            onChange={handleCheckboxChange('panicClose')}
+                        >
+                            Panic Close
+                        </Checkbox>
+                        <Checkbox
+                            checked={formData.fomoEnter}
+                            onChange={handleCheckboxChange('fomoEnter')}
+                        >
+                            FOMO Enter
+                        </Checkbox>
+                        <Checkbox
+                            checked={formData.followedRules}
+                            onChange={handleCheckboxChange('followedRules')}
+                        >
+                            Followed Rules
+                        </Checkbox>
+                    </Flex>
                 </Form.Item>
                 <Form.Item>
                     <Button

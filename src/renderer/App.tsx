@@ -5,19 +5,7 @@ import CustomCalendar from './component/Calendar'
 import Journal from './component/Journal'
 import SavedTrades from './component/SavedTrades'
 
-interface ParsedRow {
-    date: number // Timestamp in ms
-    balanceBefore: number
-    balanceAfter: number
-    realizedPnlValue: number
-    realizedPnlCurrency: string
-    token: string
-}
-
-interface TradeBalance {
-    date: number // Use a timestamp as expected by the Chart
-    balance: number
-}
+import { ParsedRow, TradeBalance } from './component/interfaces'
 
 function App() {
     const [data, setData] = useState<ParsedRow[]>([])
@@ -114,9 +102,7 @@ function App() {
                         <div className="calendar-container">
                             <CustomCalendar data={data} />
                         </div>
-                        <div className="journal-container">
-                            <SavedTrades trades={data} />
-                        </div>
+                        <SavedTrades trades={data} />
                     </section>
                 </main>
             ) : (

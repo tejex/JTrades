@@ -1,10 +1,6 @@
 import React from 'react'
 import { LineChart } from '@mui/x-charts/LineChart'
-
-interface TradeBalance {
-    date: number // Timestamp of the trade
-    balance: number // Account balance after the trade
-}
+import { TradeBalance } from './interfaces'
 
 const Chart = ({ data }: { data: TradeBalance[] }) => {
     const xDataIndex = data.map((_, index) => index * 10)

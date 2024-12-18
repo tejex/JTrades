@@ -186,10 +186,11 @@
 }
 
 .journal-container {
-  padding: 20px;
+  padding: 10px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .journal-title {
@@ -199,6 +200,10 @@
 
 .journal-submit-button {
   width: 100%;
+}
+
+.scrollable-list{
+  width: 90%;
 }
 
 .tag-grid {
@@ -216,6 +221,7 @@
 }
 .personal-bests-container {
   padding: 20px;
+  width: 70%;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -258,6 +264,11 @@
   color: #3182ce; /* Dark Blue */
 }
 
+.trade-item{
+  display: flex;
+  gap: 5%;
+}
+
 .wins-losses-container {
   display: flex;
   justify-content: center;
@@ -277,4 +288,19 @@
 
 .losses {
   color: #e53e3e; /* Error red */
+}
+
+.scrollable-list {
+  max-height: 400px; /* Approximate height for 5 trades */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 5px;
+  background-color: #ffffff;
+}
+
+.trade-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }

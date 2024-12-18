@@ -2,25 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import { Box, Typography } from '@mui/material'
 
-interface ParsedRow {
-    date: number // timestamp in ms
-    balanceBefore: number
-    balanceAfter: number
-    realizedPnlValue: number
-    realizedPnlCurrency: string
-    token: string
-}
-
-interface TradingData {
-    data: ParsedRow[]
-    accountSize: number
-    currentProfit: number
-}
-
-interface WinsAndLosses {
-    wins: number
-    losses: number
-}
+import { ParsedRow, TradingData, WinsAndLosses } from './interfaces'
 
 const PersonalBests: React.FC<TradingData> = ({
     data,
