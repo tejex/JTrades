@@ -4,6 +4,7 @@ import PersonalBests from './component/PersonalBests'
 import CustomCalendar from './component/Calendar'
 import Journal from './component/Journal'
 import SavedTrades from './component/SavedTrades'
+import DailyGoal from './component/DailyGoal'
 
 import { ParsedRow, TradeBalance } from './component/interfaces'
 
@@ -87,6 +88,7 @@ function App() {
                                 accountSize={totalAccountValue}
                                 currentProfit={totalProfit}
                             />
+                            <DailyGoal />
                         </div>
                     </section>
                     <section className="chart-section">
