@@ -8,7 +8,7 @@ const SavedTrades: React.FC<JournalProps> = ({ trades }) => {
     const filteredTrades = trades.filter((trade) => trade.token).reverse()
 
     return (
-        <div className="journal-container">
+        <div className="saved-trades">
             <Title level={4}>Saved Trades</Title>
             <div className="scrollable-list">
                 <List

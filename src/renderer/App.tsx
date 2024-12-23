@@ -4,8 +4,6 @@ import PersonalBests from './component/PersonalBests'
 import CustomCalendar from './component/Calendar'
 import Journal from './component/Journal'
 import SavedTrades from './component/SavedTrades'
-import DailyGoal from './component/DailyGoal'
-
 import { ParsedRow, TradeBalance } from './component/interfaces'
 
 function App() {
@@ -76,21 +74,20 @@ function App() {
     return (
         <div className="app-container">
             <header className="app-header">
-                <h1>Trading Data Visualizer</h1>
+                <h1>Futures Trading Statistics</h1>
             </header>
             {chartData.length > 0 ? (
                 <main className="app-main">
                     <section className="summary-section">
-                        <h2>Balance Over Time</h2>
                         <div className="summary-metrics">
                             <PersonalBests
                                 data={data}
                                 accountSize={totalAccountValue}
                                 currentProfit={totalProfit}
                             />
-                            <DailyGoal />
                         </div>
                     </section>
+
                     <section className="chart-section">
                         <Chart data={chartData} />
                         <div className="form-container">

@@ -1,85 +1,99 @@
-/* General App Layout */
+/* Reset Styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+* {
+  box-sizing: border-box; /* Ensure consistent box model behavior */
+}
+
+/* General Layout */
 .app-container {
   width: 100%;
   min-height: 100vh;
-  padding: 20px;
-  background-color: #f4f4f9; /* Soft light gray for a clean background */
   font-family: 'Roboto', sans-serif; /* Modern and easy-to-read font */
   color: #2d3748; /* Neutral dark gray for text */
+  background-color: white;
 }
 
 .app-header {
   text-align: center;
   margin-bottom: 20px;
+  padding: 10px;
 }
 
 .app-header h1 {
   font-size: 2.5rem;
   color: #1a202c; /* Darker header text */
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .app-main {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-/* Summary Section */
-.summary-section {
-  text-align: center;
-  margin-bottom: 40px;
-
-  align-items: center;
-  gap: 10px;
-  background-color: #ffffff; /* White card-like background */
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
-.summary-section h2 {
-  font-size: 1.8rem;
-  color: #2b6cb0; /* Blue accent color for headings */
+/* Dashboard Section */
+.dashboard {
+  padding: 20px;
 }
 
-.summary-metrics {
+.wins-losses, .best-worst {
   display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap; /* Wrap metrics if needed */
+  gap: 10px;
 }
 
-.summary-metrics h3 {
+.bestWin {
+  color: #38a169;
+  font-weight: bold;
+}
+
+.worstLoss {
+  color: #e53e3e;
+  font-weight: bold;
+}
+
+.profit-container {
   font-size: 1.2rem;
-  color: #4a5568; /* Slightly muted text color */
+  padding: 5px;
+  display: inline-block;
+}
+
+.positive-profit {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.negative-profit {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 /* Chart and Form Section */
 .chart-section {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   align-items: flex-start;
   justify-content: space-between;
 }
 
 .chart-container {
-  flex: 7; /* Main focus on chart */
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 8;
 }
 
 .form-container {
-  flex: 3; /* Smaller space for form */
-  background-color: #f7fafc;
+  flex: 5;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Info Section (Calendar and Pie Chart) */
+/* Info Section */
 .info-section {
   display: flex;
   gap: 20px;
@@ -89,48 +103,53 @@
 }
 
 .calendar-container {
-  flex: 7; /* 70% of the width */
-  background-color: #ffffff;
+  flex: 7;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid black;
+  margin-top: 2%;
+  margin-bottom: 2%;
 }
 
 .journal-container {
-  flex: 3; /* 30% of the width */
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  flex: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  border: 2px solid black;
 }
 
+.saved-trades{
+  flex: 4;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px solid black;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
 
-/* Calendar CSS */
+/* Calendar Styles */
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 days in a week */
+  grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   padding: 5px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
 }
 
 .calendar-day {
   padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   text-align: center;
   font-size: 0.9rem;
   min-height: 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .calendar-navigation {
@@ -139,9 +158,6 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .day-number {
@@ -160,39 +176,32 @@
   text-align: center;
   font-size: 1rem;
   display: flex;
-  gap:5%;
-  color: #4a5568; /* Muted text */
+  gap: 5%;
+  color: #4a5568;
 }
 
 /* No Data Message */
 .no-data {
   text-align: center;
   margin-top: 50px;
-  color: #718096; /* Muted text for inactive state */
+  color: #718096;
   font-size: 1.2rem;
 }
 
 /* Accent Colors for Trading Style */
 .success-color {
-  color: #38a169; /* Matches success green */
+  color: #38a169;
 }
 
 .error-color {
-  color: #e53e3e; /* Matches error red */
+  color: #e53e3e;
 }
 
 .info-color {
-  color: #3182ce; /* Accent blue for neutral info */
+  color: #3182ce;
 }
 
-.journal-container {
-  padding: 10px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-}
-
+/* Journal Container */
 .journal-title {
   text-align: center;
   margin-bottom: 20px;
@@ -202,105 +211,49 @@
   width: 100%;
 }
 
-.scrollable-list{
+.scrollable-list {
   width: 90%;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 5px;
 }
 
+/* Tags */
 .tag-grid {
   display: grid;
-  grid-template-columns: repeat(2, auto); /* Two columns with auto width */
-  gap:2%; /* Space between tags */
-  justify-content: start; /* Align tags to the start */
-  align-items: center; /* Align items vertically */
+  grid-template-columns: repeat(2, auto);
+  gap: 10px;
+  justify-content: start;
+  align-items: center;
 }
 
 .fixed-tag {
-  white-space: nowrap; /* Prevent the tag from breaking onto multiple lines */
-  text-align: center;
-  border-radius: 4px; /* Optional: soften the edges */
-}
-.personal-bests-container {
-  padding: 20px;
-  width: 70%;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
   text-align: center;
 }
 
-.personal-bests-title {
-  margin-bottom: 20px;
-  color: #2b6cb0;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2x2 Grid */
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.stat-box {
-  padding: 15px;
-  font-size: 1rem;
-  text-align: center;
-  border-radius: 8px;
-  font-weight: bold;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.success-color {
-  background-color: #e6ffed; /* Light Green */
-  color: #38a169; /* Dark Green */
-}
-
-.error-color {
-  background-color: #fde8e8; /* Light Red */
-  color: #e53e3e; /* Dark Red */
-}
-
-.info-color {
-  background-color: #e8f4ff; /* Light Blue */
-  color: #3182ce; /* Dark Blue */
-}
-
-.trade-item{
-  display: flex;
-  gap: 5%;
-}
-
-.wins-losses-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  font-size: 1rem;
-  color: #4a5568;
-}
-
-.wins,
-.losses {
-  font-weight: bold;
-}
-
-.wins {
-  color: #38a169; /* Success green */
-}
-
-.losses {
-  color: #e53e3e; /* Error red */
-}
-
-.scrollable-list {
-  max-height: 400px; /* Approximate height for 5 trades */
-  overflow-y: auto; /* Enable vertical scrolling */
-  padding: 5px;
-  background-color: #ffffff;
-}
-
+/* Trade Items */
 .trade-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Wins and Losses */
+.wins-losses-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.wins {
+  color: #38a169;
+  font-weight: bold;
+}
+
+.losses {
+  color: #e53e3e;
+  font-weight: bold;
 }

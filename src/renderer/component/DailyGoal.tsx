@@ -8,14 +8,10 @@ const DailyGoal: React.FC = () => {
         setGoal(value)
     }
 
-    const handleSubmit = (goal: number) => {
-        setGoal(goal)
-    }
-
     return (
         <div>
             <h1>Daily Goal: ${dailyGoal + ''}</h1>
-            <Form layout="vertical" onFinish={handleSubmit}>
+            <Form layout="vertical">
                 <Form.Item>
                     <InputNumber
                         onChange={handleGoalChange}

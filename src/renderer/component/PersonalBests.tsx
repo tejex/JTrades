@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Alert from '@mui/material/Alert'
-import { Box, Typography } from '@mui/material'
-
+import { Typography } from 'antd'
 import { ParsedRow, TradingData, WinsAndLosses } from './interfaces'
 
-const PersonalBests: React.FC<TradingData> = ({
-    data,
-    accountSize,
-    currentProfit,
-}) => {
+const PersonalBests: React.FC<TradingData> = ({ data }) => {
     const [performance, setPerformance] = useState({
         bestWin: 0,
         worstLoss: 0,
@@ -63,42 +57,41 @@ const PersonalBests: React.FC<TradingData> = ({
         setProfit(data[data.length - 1]?.balanceAfter - 10000 || 0)
     }, [data])
 
+    const calculatePercentage = (value: number, base: number) =>
+        ((value / base) * 100).toFixed(2)
+
+    const profitClass = profit >= 0 ? 'positive-profit' : 'negative-profit'
     return (
-        <Box className="personal-bests-container">
-            <h3>Total Account Value: ${accountSize.toFixed(2)}</h3>
-            <h3>Total Profit / Loss: ${currentProfit.toFixed(2)}</h3>
-            <div className="stats-grid">
-                <Alert className="stat-box success-color">
-                    <strong>Best Win:</strong> $
-                    {Math.floor(performance.bestWin)}
-                </Alert>
-                <Alert className="stat-box error-color">
-                    <strong>Biggest Loss:</strong> -$
-                    {Math.floor(performance.worstLoss)}
-                </Alert>
-                <Alert className="stat-box info-color">
-                    <strong>Portfolio Size:</strong> ${portfolioSize.toFixed(2)}
-                </Alert>
-                <Alert
-                    className={`stat-box ${
-                        profit >= 0 ? 'success-color' : 'error-color'
-                    }`}
-                >
-                    <strong>Current Profit:</strong> $
-                    {profit >= 0
-                        ? `+${Math.floor(profit)}`
-                        : `${Math.floor(profit)}`}
-                </Alert>
+        <div className="dashboard">
+            <div className="total-portfolio">
+                <h1>Current Account:</h1>
+                <Typography.Title level={1}>
+                    ${portfolioSize.toFixed(2)}
+                </Typography.Title>
+                <div className={`profit-container ${profitClass}`}>
+                    <Typography.Text>
+                        {profit >= 0 ? '+' : ''}${Math.floor(profit)} (
+                        {calculatePercentage(profit, 10000)}%)
+                    </Typography.Text>
+                </div>
             </div>
-            <div className="wins-losses-container">
-                <Typography className="wins">
-                    Wins: {winsAndLosses.wins}
-                </Typography>
-                <Typography className="losses">
-                    Losses: {winsAndLosses.losses}
-                </Typography>
+            <div className="best-worst">
+                <p className="bestWin">
+                    Best Win: ${Math.floor(performance.bestWin)}
+                </p>
+                <p className="worstLoss">
+                    Worst Loss: -${Math.floor(performance.worstLoss)}
+                </p>
             </div>
-        </Box>
+            <div className="wins-losses">
+                <div className="wins">
+                    <p>Wins: {winsAndLosses.wins}</p>
+                </div>
+                <div className="losses">
+                    <p>Losses: {winsAndLosses.losses}</p>
+                </div>
+            </div>
+        </div>
     )
 }
 
