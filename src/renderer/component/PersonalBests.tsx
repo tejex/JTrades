@@ -13,10 +13,15 @@ const PersonalBests: React.FC<TradingData> = ({ data }) => {
     })
     const [portfolioSize, setPortfolioSize] = useState(0)
     const [profit, setProfit] = useState(0)
+    const [expectancy, setExpectancy] = useState(0)
 
     useEffect(() => {
         let prevBalance = 10000
         const newPerformance = { bestWin: 0, worstLoss: 0 }
+        let totalWins = 0
+        let totalLosses = 0
+        let winPnL = 0
+        let lossPnL = 0
 
         if (data.length > 1) {
             const result = data.reduce(
@@ -26,8 +31,16 @@ const PersonalBests: React.FC<TradingData> = ({ data }) => {
                     const prevBalance = data[index - 1].balanceAfter
                     const currBalance = curr.balanceAfter
 
-                    if (currBalance - prevBalance > 5) acc.wins += 1
-                    if (prevBalance - currBalance > 5) acc.losses += 1
+                    if (currBalance - prevBalance > 5) {
+                        acc.wins += 1
+                        totalWins += 1
+                        winPnL += curr.realizedPnlValue
+                    }
+                    if (prevBalance - currBalance > 5) {
+                        acc.losses += 1
+                        totalLosses += 1
+                        lossPnL += curr.realizedPnlValue
+                    }
 
                     return acc
                 },
@@ -52,27 +65,47 @@ const PersonalBests: React.FC<TradingData> = ({ data }) => {
             prevBalance = trade.balanceAfter
         })
 
+        // Calculate Expectancy
+        const totalTrades = totalWins + totalLosses
+        const winRate = totalTrades > 0 ? totalWins / totalTrades : 0
+        const lossRate = totalTrades > 0 ? totalLosses / totalTrades : 0
+        const avgWinSize = totalWins > 0 ? winPnL / totalWins : 0
+        const avgLossSize = totalLosses > 0 ? -lossPnL / totalLosses : 0
+
+        const calculatedExpectancy =
+            winRate * avgWinSize - lossRate * avgLossSize
+
         setPerformance(newPerformance)
         setPortfolioSize(data[data.length - 1]?.balanceAfter || 0)
         setProfit(data[data.length - 1]?.balanceAfter - 10000 || 0)
+        setExpectancy(calculatedExpectancy)
     }, [data])
 
     const calculatePercentage = (value: number, base: number) =>
         ((value / base) * 100).toFixed(2)
 
     const profitClass = profit >= 0 ? 'positive-profit' : 'negative-profit'
+
     return (
         <div className="dashboard">
             <div className="total-portfolio">
-                <h1>Current Account:</h1>
-                <Typography.Title level={1}>
-                    ${portfolioSize.toFixed(2)}
-                </Typography.Title>
-                <div className={`profit-container ${profitClass}`}>
-                    <Typography.Text>
-                        {profit >= 0 ? '+' : ''}${Math.floor(profit)} (
-                        {calculatePercentage(profit, 10000)}%)
-                    </Typography.Text>
+                <div>
+                    <h1>Current Account:</h1>
+                    <Typography.Title level={1}>
+                        ${portfolioSize.toFixed(2)}
+                    </Typography.Title>
+                    <div className={`profit-container ${profitClass}`}>
+                        <Typography.Text>
+                            {profit >= 0 ? '+' : ''}${Math.floor(profit)} (
+                            {calculatePercentage(profit, 10000)}%)
+                        </Typography.Text>
+                    </div>
+                </div>
+                <div className="expectancy">
+                    <h3>Expectancy:</h3>
+                    <Typography.Title level={2}>
+                        ${expectancy.toFixed(2)}
+                    </Typography.Title>
                 </div>
             </div>
             <div className="best-worst">

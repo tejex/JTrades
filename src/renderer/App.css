@@ -45,6 +45,11 @@ html, body {
   padding: 20px;
 }
 
+.total-portfolio{
+  display: flex;
+  gap: 5%;
+}
+
 .wins-losses, .best-worst {
   display: flex;
   gap: 10px;
@@ -137,9 +142,25 @@ html, body {
 /* Calendar Styles */
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   gap: 5px;
   padding: 5px;
+}
+.weekly-total {
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.calendar-day.weekly-total {
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  grid-column: span 1; /* To ensure it aligns with a single column in the grid */
 }
 
 .calendar-day {

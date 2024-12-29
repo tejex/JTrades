@@ -4,7 +4,7 @@ import { TradeBalance } from './interfaces'
 
 const Chart = ({ data }: { data: TradeBalance[] }) => {
     // Get the last 10 trades
-    const recentData = data.slice(-25)
+    const recentData = data.slice(-30)
 
     // Prepare data for the chart
     const xDataIndex = recentData.map((_, index) => index * 10)
@@ -14,15 +14,14 @@ const Chart = ({ data }: { data: TradeBalance[] }) => {
     return (
         <div
             className="chart-container"
-            style={{ height: '435px', width: '80%' }} // Ensure the container has height and width
+            style={{ height: '435px', width: '100%' }} // Ensure the container has height and width
         >
-            <h1>Last 20 Trades:</h1>
             <LineChart
                 sx={{ color: 'white' }}
                 series={[
                     {
                         data: yData,
-                        label: 'Balance Over Time',
+                        label: '30 previous trades',
                         showMark: ({ index }) => index % 1 === 0,
                         color: 'blue',
                     },

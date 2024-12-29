@@ -74,7 +74,7 @@ function App() {
     return (
         <div className="app-container">
             <header className="app-header">
-                <h1>Futures Trading Statistics</h1>
+                <h1 style={{ marginTop: '5%' }}>Futures Trading Statistics</h1>
             </header>
             {chartData.length > 0 ? (
                 <main className="app-main">
