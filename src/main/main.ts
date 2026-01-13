@@ -23,6 +23,12 @@ class AppUpdater {
         autoUpdater.checkForUpdatesAndNotify()
     }
 }
+interface TradovateRecord {
+  accountName: string
+  date: string
+  totalAmount: number
+  dailyPnL: number
+}
 
 let mainWindow: BrowserWindow | null = null
 
@@ -32,17 +38,30 @@ ipcMain.on('ipc-example', async (event, arg) => {
     event.reply('ipc-example', msgTemplate('pong'))
 })
 
-ipcMain.handle('read-trades-file', async () => {
-    const filePath = path.join(app.getAppPath(), 'trades.json') // Ensure the file is in the root directory
+ipcMain.handle('read-tradovate-csv', async () => {
+    const filePath = path.join(app.getAppPath(), 'Account Balance History.csv');
     try {
-        const fileContent = fs.readFileSync(filePath, 'utf-8')
-        const data = JSON.parse(fileContent) // Parse the JSON file
-        return data.reverse()
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const lines = content.split('\n').filter(line => line.trim() !== '');
+
+        return lines.slice(1).map(line => {
+            // Regex handles commas inside quotes for the "Total Amount" field
+            const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
+            return {
+                accountId: parts[0],
+                accountName: parts[1],
+                date: parts[2],
+                // Removes quotes/commas to ensure numbers are usable
+                totalAmount: parseFloat(parts[3].replace(/[",]/g, '')),
+                dailyPnL: parseFloat(parts[4])
+            };
+        });
     } catch (error) {
-        console.error('Error reading trades.json:', error)
-        throw error // Ensure the renderer process handles errors
+        console.error('Error reading CSV:', error);
+        return [];
     }
-})
+});
 
 ipcMain.handle('add-new-trade', async (_event, newTrade) => {
     const tradesFilePath = path.join(app.getAppPath(), 'trades.json')

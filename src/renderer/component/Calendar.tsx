@@ -1,12 +1,21 @@
 import React, { useState } from 'react'
-import { ParsedRow, CalendarProps } from './interfaces'
 
-const groupPnLByDate = (data: ParsedRow[]) => {
+interface TradovateData {
+    accountId: string;
+    accountName: string;
+    date: string;
+    totalAmount: number;
+    dailyPnL: number;
+}
+
+// Updated to use TradovateData fields
+const groupPnLByDate = (data: TradovateData[]) => {
     return data.reduce(
         (acc, trade) => {
-            const dateKey = new Date(trade.date).toISOString().split('T')[0]
-            acc[dateKey] = (acc[dateKey] || 0) + trade.realizedPnlValue
-            return acc
+            // Tradovate dates are typically "YYYY-MM-DD", but we ensure consistency here
+            const dateKey = trade.date.trim();
+            acc[dateKey] = (acc[dateKey] || 0) + trade.dailyPnL;
+            return acc;
         },
         {} as Record<string, number>
     )
@@ -19,148 +28,96 @@ const calculateMonthlyPnL = (
 ) => {
     return Object.entries(groupedPnL).reduce((total, [date, pnl]) => {
         const dateObj = new Date(date)
-        if (dateObj.getFullYear() === year && dateObj.getMonth() === month) {
+        // Adjust for UTC if your CSV dates are strictly YYYY-MM-DD to avoid offset issues
+        if (dateObj.getUTCFullYear() === year && dateObj.getUTCMonth() === month) {
             total += pnl
         }
         return total
     }, 0)
 }
 
-const CustomCalendar: React.FC<CalendarProps> = ({ data }) => {
+const CustomCalendar: React.FC<{ data: TradovateData[] }> = ({ data }) => {
     const groupedPnL = groupPnLByDate(data)
 
-    const dates = data.map((trade) => new Date(trade.date))
-    const minDate = new Date(Math.min(...dates.map((d) => d.getTime())))
-    const maxDate = new Date(Math.max(...dates.map((d) => d.getTime())))
+    const timestamps = data.map((d) => new Date(d.date).getTime());
+    const maxDate = new Date(Math.max(...timestamps))
 
-    const [currentMonth, setCurrentMonth] = useState(minDate)
+    const [currentMonth, setCurrentMonth] = useState(
+        new Date(maxDate.getUTCFullYear(), maxDate.getUTCMonth(), 1)
+    );
 
-    const nextMonth = () => {
-        setCurrentMonth(
-            new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-        )
-    }
+    const year = currentMonth.getUTCFullYear()
+    const month = currentMonth.getUTCMonth()
 
-    const prevMonth = () => {
-        setCurrentMonth(
-            new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
-        )
-    }
-
-    const isNextDisabled =
-        currentMonth.getFullYear() === maxDate.getFullYear() &&
-        currentMonth.getMonth() === maxDate.getMonth()
-
-    const isPrevDisabled =
-        currentMonth.getFullYear() === minDate.getFullYear() &&
-        currentMonth.getMonth() === minDate.getMonth()
-
-    const year = currentMonth.getFullYear()
-    const month = currentMonth.getMonth()
+    // 1. Calculate how many days are in the month
     const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+    // 2. Calculate the day of the week the 1st falls on (0 = Sunday, 1 = Monday...)
+    const firstDayOfMonth = new Date(year, month, 1).getDay()
+
+    const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1))
+    const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1))
 
     const monthlyPnL = calculateMonthlyPnL(groupedPnL, year, month)
 
-    // Initialize weekly profit
+    // Prepare all cells (Padding + Days)
+    const calendarCells = []
+
+    // Add empty padding cells for days before the 1st
+    for (let p = 0; p < firstDayOfMonth; p++) {
+        calendarCells.push(<div key={`pad-${p}`} className="calendar-day empty" />);
+    }
+
+    // Add actual days
     let weeklyPnL = 0
-    let dayOfWeekCounter = 0
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+        const pnl = groupedPnL[dateKey] || 0
+        weeklyPnL += pnl
+
+        calendarCells.push(
+          <div key={dateKey} className="calendar-day" style={{
+              backgroundColor: pnl > 0 ? '#065f46' : pnl < 0 ? '#7f1d1d' : '#1b263b'
+          }}>
+              <span className="day-number">{day}</span>
+              {pnl !== 0 && <span className="pnl-value">${pnl.toFixed(2)}</span>}
+          </div>
+        )
+
+        const dayOfWeek = (firstDayOfMonth + day - 1) % 7;
+
+        if (dayOfWeek === 6 || day === daysInMonth) {
+            const weeklyClass = weeklyPnL > 0 ? 'positive' : weeklyPnL < 0 ? 'negative' : '';
+            calendarCells.push(
+                <div key={`week-${day}`} className={`calendar-day weekly-total ${weeklyClass}`}>
+                    <strong>Week: ${weeklyPnL.toFixed(2)}</strong>
+                </div>
+            );
+            weeklyPnL = 0
+        }
+    }
 
     return (
         <div className="calendar-component">
-            <h1>Monthly Progress Chart</h1>
             <div className="calendar-navigation">
-                <button onClick={prevMonth} disabled={isPrevDisabled}>
-                    Previous
-                </button>
-                <h2>
-                    {currentMonth.toLocaleString('default', {
-                        month: 'long',
-                        year: 'numeric',
-                    })}
-                </h2>
-                <button onClick={nextMonth} disabled={isNextDisabled}>
-                    Next
-                </button>
+                <button onClick={prevMonth}>Previous</button>
+                <h2>{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
+                <button onClick={nextMonth}>Next</button>
             </div>
 
-            <div
-                className={`monthly-pnl ${monthlyPnL >= 0 ? 'positive' : 'negative'}`}
-            >
-                Total PnL for{' '}
-                {currentMonth.toLocaleString('default', { month: 'long' })}: $
-                {monthlyPnL.toFixed(2)}
+            <div className={`monthly-pnl ${monthlyPnL >= 0 ? 'positive' : 'negative'}`}>
+                Monthly Result: ${monthlyPnL.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+
+            {/* Header for Day Names */}
+            <div className="calendar-grid-header">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Weekly'].map(d => (
+                    <div key={d} className="header-name">{d}</div>
+                ))}
             </div>
 
             <div className="calendar-grid">
-                {Array.from({ length: daysInMonth }, (_, i) => {
-                    const day = i + 1
-                    const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-                    const pnl = groupedPnL[dateKey] || 0
-                    weeklyPnL += pnl
-                    dayOfWeekCounter++
-
-                    const isEndOfWeek =
-                        dayOfWeekCounter === 7 || day === daysInMonth
-                    const dayElement = (
-                        <div
-                            className="calendar-day"
-                            key={dateKey}
-                            style={{
-                                backgroundColor:
-                                    pnl === 0
-                                        ? '#f4f4f4'
-                                        : pnl > 0
-                                          ? '#d4edda'
-                                          : '#f8d7da',
-                                color:
-                                    pnl > 0
-                                        ? '#155724'
-                                        : pnl < 0
-                                          ? '#721c24'
-                                          : '#6c757d',
-                            }}
-                        >
-                            <div className="day-number">{day}</div>
-                            {pnl !== 0 && (
-                                <div className="pnl-value">
-                                    ${pnl.toFixed(2)}
-                                </div>
-                            )}
-                        </div>
-                    )
-
-                    if (isEndOfWeek) {
-                        const weeklyElement = (
-                            <div
-                                className="calendar-day weekly-total"
-                                key={`week-total-${i}`}
-                                style={{
-                                    backgroundColor:
-                                        weeklyPnL === 0
-                                            ? '#f4f4f4'
-                                            : weeklyPnL > 0
-                                              ? '#d4edda'
-                                              : '#f8d7da',
-                                    color:
-                                        weeklyPnL > 0
-                                            ? '#155724'
-                                            : weeklyPnL < 0
-                                              ? '#721c24'
-                                              : '#6c757d',
-                                }}
-                            >
-                                <div className="pnl-value">
-                                    Week Total: ${weeklyPnL.toFixed(2)}
-                                </div>
-                            </div>
-                        )
-                        weeklyPnL = 0
-                        dayOfWeekCounter = 0
-                        return [dayElement, weeklyElement]
-                    }
-
-                    return dayElement
-                }).flat()}
+                {calendarCells}
             </div>
         </div>
     )

@@ -27,4 +27,7 @@ npm-debug.log.*
 *.css.d.ts
 *.sass.d.ts
 *.scss.d.ts
+realTrades.json
 trades.json
+
+Account Balance History.csv
